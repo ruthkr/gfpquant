@@ -44,8 +44,14 @@ mod_gfp_ui <- function(id) {
             editableNames = TRUE,
             extend = TRUE
           )
-        )
+        ),
 
+        actionButton(
+          inputId = ns("get_gfp_level"),
+          label = "Get GFP",
+          class = "btn-primary",
+          icon = icon("calculator")
+        )
       ),
       mainPanel = mainPanel(
         width = 7,
