@@ -9,8 +9,13 @@ app_ui <- function(request) {
     # Leave this function for adding external resources
     golem_add_external_resources(),
     # Your application UI logic
-    fluidPage(
-      h1("gfpquant")
+    navbarPage(
+      title = "gfpquant",
+      theme = theme(),
+      collapsible = TRUE,
+
+      app_body_home(),
+      mod_gfp_ui("gfp_ui_1")
     )
   )
 }
