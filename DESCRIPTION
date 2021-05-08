@@ -9,19 +9,20 @@ Authors@R:
            comment = c(ORCID = "0000-0003-1873-6203"))
 Description: Quantification of GFP Levels (ng).
 License: MIT + file LICENSE
+URL: https://github.com/ruthkr/gfpquant
+BugReports: https://github.com/ruthkr/gfpquant/issues
 Imports: 
+    bslib,
     config (>= 0.3.1),
-    golem (>= 0.3.1),
-    shiny (>= 1.6.0),
-    magrittr,
     dplyr,
     ggplot2,
     ggrepel,
-    tidyr,
+    golem (>= 0.3.1),
+    magrittr,
     rlang,
-    bslib
+    shiny (>= 1.6.0),
+    shinyMatrix,
+    tidyr
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
-URL: https://github.com/ruthkr/gfpquant
-BugReports: https://github.com/ruthkr/gfpquant/issues
