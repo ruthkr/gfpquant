@@ -71,9 +71,27 @@ mod_gfp_server <- function(id) {
     ns <- session$ns
 
     output$input_panel_output <- renderPrint({
+      if (input$get_gfp_level == 0) {
+        return(print("Input your values"))
+      }
+
+      input$get_gfp_level
+      isolate({
+        mat_std_curve <- input$mat_std_curve
+        mat_sample_fluorescence <- input$mat_sample_fluorescence
+      })
+
+      vec_a <- mat_std_curve[,1]
+      vec_a <- vec_a[1:(length(vec_a) - 1)]
+      vec_b <- mat_std_curve[,2]
+      vec_b <- vec_b[1:(length(vec_b) - 1)]
+
       utils::str(list(
-        "Matrix A" = input$mat_std_curve,
-        "Matrix B" = input$mat_sample_fluorescence
+        "Matrix A" = mat_std_curve,
+        "Matrix B" = mat_sample_fluorescence,
+        "Vector A" = vec_a,
+        "Vector B" = vec_b,
+        "First function" = get_std_curve_value(vec_a, vec_b)
       ))
     })
   })
