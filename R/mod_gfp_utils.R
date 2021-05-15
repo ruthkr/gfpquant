@@ -4,8 +4,8 @@
 #' @param std_gfp
 get_std_curve_value <- function(std_fluorescence, std_gfp) {
   df <- data.frame(
-    fluorescence = std_fluorescence,
-    gfp = std_gfp
+    fluorescence = as.numeric(std_fluorescence),
+    gfp = as.numeric(std_gfp)
   )
 
   fit <- stats::lm(fluorescence ~ gfp, data = df)
@@ -20,10 +20,18 @@ get_std_curve_value <- function(std_fluorescence, std_gfp) {
 
 #' Function to get the value, given input data
 #'
-#' @param mdata
+#' @param mdata Sample fluorescence matrix.
 #' @importFrom rlang .data
 get_fluorescence_input <- function(mdata) {
-  df_input <- as.data.frame(mdata, row.names = FALSE)
+  df_input <- as.data.frame(mdata, row.names = FALSE) %>%
+    dplyr::mutate(
+      dplyr::across(
+        .cols = dplyr::everything(),
+        .fns = as.numeric
+      )
+    )
+
+  colnames(df_input)[1] <- "uninfiltrated_leaves"
 
   # Get new df with the fluorescence value subtracted from infiltrated leave
   df_tidied <- df_input %>%
@@ -35,11 +43,11 @@ get_fluorescence_input <- function(mdata) {
     ) %>%
     dplyr::mutate(
       dplyr::across(
-        .cols = -.data$uninfiltrated_leave,
-        .fns = ~ .x - .data$uninfiltrated_leave
+        .cols = -.data$uninfiltrated_leaves,
+        .fns = ~ .x - .data$uninfiltrated_leaves
       )
     ) %>%
-    dplyr::select(-c("uninfiltrated_leave")) %>%
+    dplyr::select(-c("uninfiltrated_leaves")) %>%
     tidyr::pivot_longer(
       dplyr::everything(),
       names_to = "sample",
@@ -62,7 +70,7 @@ predict_gfp_from_fluorescence <- function(df_tidied, fit) {
   df_with_pred_gfp <- df_tidied %>%
     dplyr::rowwise() %>%
     dplyr::mutate(
-      gfp = (.data$fluorescence - .data$intercept) / .data$slope
+      gfp = (.data$fluorescence - intercept) / slope
     )
 
   return(df_with_pred_gfp)
