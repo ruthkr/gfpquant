@@ -72,7 +72,9 @@ mod_gfp_ui <- function(id) {
         width = 7,
 
         h4("Results"),
-        verbatimTextOutput(ns("input_panel_output"))
+        # verbatimTextOutput(ns("input_panel_output")),
+
+        plotOutput(ns("plot_std_curve"))
       )
     )
   )
@@ -109,6 +111,40 @@ mod_gfp_server <- function(id) {
         "First function" = get_std_curve_value(vec_a, vec_b)
       ))
     })
+
+    output$plot_std_curve <- renderPlot({
+      if (input$get_gfp_level == 0) {
+        return(NULL)
+      }
+
+      input$get_gfp_level
+      isolate({
+        mat_std_curve <- input$mat_std_curve
+        mat_sample_fluorescence <- input$mat_sample_fluorescence
+      })
+
+      # Process data
+      std_gfp <- mat_std_curve[,1]
+      std_gfp <- std_gfp[1:(length(std_gfp) - 1)]
+      std_fluorescence <- mat_std_curve[,2]
+      std_fluorescence <- std_fluorescence[1:(length(std_fluorescence) - 1)]
+
+      extra_row <- nrow(mat_sample_fluorescence)
+      extra_col <- ncol(mat_sample_fluorescence)
+      mat_sample_fluorescence <- mat_sample_fluorescence[-extra_row, -extra_col]
+      # browser()
+
+      # Calculations
+      list_std_curve <- get_std_curve_value(std_fluorescence, std_gfp)
+      df_tidied <- get_fluorescence_input(mat_sample_fluorescence)
+      df_with_pred_gfp <- predict_gfp_from_fluorescence(df_tidied, list_std_curve$std_curve_fit)
+
+      gg_plot <- plot_std_curve_and_pred(list_std_curve$std_curve_df, df_with_pred_gfp, list_std_curve$std_curve_fit)
+
+      return(gg_plot)
+    })
+
+
   })
 }
 
