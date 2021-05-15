@@ -180,7 +180,7 @@ plot_bar_fluorescence <- function(mat_sample_fluorescence) {
       ggplot2::aes(x = .data$sample, y = .data$fluorescence),
       fill = "#80b1d3",
       width = 0.5,
-      alpha = 0.5
+      alpha = 1
     ) +
     ggbeeswarm::geom_beeswarm(
       data = df_melt,
@@ -199,4 +199,24 @@ plot_bar_fluorescence <- function(mat_sample_fluorescence) {
     # )
 
   return(gg_fluor)
+}
+
+#' Title
+#'
+#' @param df_with_pred_gfp Data
+#'
+#' @importFrom rlang .data
+plot_bar_gfp <- function(df_with_pred_gfp) {
+  gg_gfp <- df_with_pred_gfp %>%
+    ggplot2::ggplot() +
+    ggplot2::aes(x = .data$Sample, y = .data$`GFP (g/kg)`) +
+    ggplot2::geom_bar(
+      stat = "identity",
+      fill = "mediumseagreen",
+      width = 0.5,
+      alpha = 1
+    ) +
+    ggplot2::scale_y_continuous(breaks = seq(0, 1250, 250))
+
+  return(gg_gfp)
 }
