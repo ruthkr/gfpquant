@@ -63,7 +63,7 @@ mod_gfp_ui <- function(id) {
 
         actionButton(
           inputId = ns("get_gfp_level"),
-          label = "Get GFP",
+          label = "Calculate",
           class = "btn-primary",
           icon = icon("calculator")
         )
@@ -74,7 +74,10 @@ mod_gfp_ui <- function(id) {
         h4("Results"),
         # verbatimTextOutput(ns("input_panel_output")),
 
-        plotOutput(ns("plot_std_curve"))
+        plotOutput(ns("plot_std_curve")),
+        plotOutput(ns("plot_bar_fluorescence")),
+        plotOutput(ns("plot_bar_gfp")),
+        DT::DTOutput(ns("table_gfp_kg"))
       )
     )
   )
@@ -86,6 +89,8 @@ mod_gfp_ui <- function(id) {
 mod_gfp_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
+
+    react_vals <- reactiveValues()
 
     output$input_panel_output <- renderPrint({
       if (input$get_gfp_level == 0) {
@@ -139,11 +144,103 @@ mod_gfp_server <- function(id) {
       df_tidied <- get_fluorescence_input(mat_sample_fluorescence)
       df_with_pred_gfp <- predict_gfp_from_fluorescence(df_tidied, list_std_curve$std_curve_fit)
 
+      # browser()
+
       gg_plot <- plot_std_curve_and_pred(list_std_curve$std_curve_df, df_with_pred_gfp, list_std_curve$std_curve_fit)
 
-      return(gg_plot)
-    })
+      # Reactive values
+      react_vals$df_with_pred_gfp <- df_with_pred_gfp
 
+      return(gg_plot)
+    }, res = 96)
+
+    output$plot_bar_fluorescence <- renderPlot({
+      if (input$get_gfp_level == 0) {
+        return(NULL)
+      }
+
+      input$get_gfp_level
+      isolate({
+        mat_sample_fluorescence <- input$mat_sample_fluorescence
+      })
+
+      # Process data
+      extra_row <- nrow(mat_sample_fluorescence)
+      extra_col <- ncol(mat_sample_fluorescence)
+      mat_sample_fluorescence <- mat_sample_fluorescence[-extra_row, -extra_col]
+
+      # Plot
+      gg_plot <- plot_bar_fluorescence(mat_sample_fluorescence)
+
+      return(gg_plot)
+    }, res = 96)
+
+    output$plot_bar_gfp <- renderPlot({
+      if (input$get_gfp_level == 0) {
+        return(NULL)
+      }
+
+      input$get_gfp_level
+      isolate({
+        df_with_pred_gfp <- react_vals$df_with_pred_gfp
+      })
+
+      # Process data
+      df_with_pred_gfp_kg <- df_with_pred_gfp %>%
+        dplyr::mutate(
+          gfp_final = gfp * 3
+        ) %>%
+        `colnames<-`(c("Sample", "Fluorescence", "GFP (ng)", "GFP (g/kg)"))
+
+      # Reactive values
+      react_vals$df_with_pred_gfp_kg <- df_with_pred_gfp_kg
+
+      # Plot
+      gg_plot <- plot_bar_gfp(df_with_pred_gfp_kg)
+
+      return(gg_plot)
+    }, res = 96)
+
+    output$table_gfp_kg <- DT::renderDT({
+      if (input$get_gfp_level == 0) {
+        return(DT::datatable(NULL, style = "bootstrap4"))
+      }
+
+      input$get_gfp_level
+      isolate({
+        df_with_pred_gfp_kg <- react_vals$df_with_pred_gfp_kg
+      })
+
+      table <- DT::datatable(
+        data = df_with_pred_gfp_kg,
+        style = "bootstrap4",
+        rownames = FALSE,
+        selection = "none",
+        extensions = "Buttons",
+        options = list(
+          pageLength = 10,
+          filter = FALSE,
+          lengthChange = FALSE,
+          scrollX = TRUE,
+          dom = "tB",
+      # <'row'<'col-sm-12'tr>>
+      # <'row'<'col-sm-12 col-md-7'pB><'col-sm-12 col-md-5 text-right'i>>
+      # ",
+          buttons = list(
+            list(
+              extend = "csv",
+              filename = "data"
+            ),
+            list(
+              extend = "excel",
+              filename = "data"
+            )
+          )
+        )
+      )
+
+      return(table)
+    })
 
   })
 }
