@@ -76,8 +76,6 @@ predict_gfp_from_fluorescence <- function(df_tidied, fit) {
   return(df_with_pred_gfp)
 }
 
-
-
 #' Title
 #'
 #' @param df_std_curve
@@ -138,7 +136,67 @@ plot_std_curve_and_pred <- function(df_std_curve, df_with_pred_gfp, fit) {
     ) +
     ggplot2::scale_x_continuous(expand = ggplot2::expansion(mult = c(0, 0.01), add = c(2, 0))) +
     ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0, 0.01), add = c(2, 0)))
-  # ggplot2::theme_bw()
 
   return(gg)
+}
+
+#' Title
+#'
+#' @param mat_sample_fluorescence Data
+#'
+#' @importFrom rlang .data
+plot_bar_fluorescence <- function(mat_sample_fluorescence) {
+  # browser()
+  df_tidied <- get_fluorescence_input(mat_sample_fluorescence)
+
+  df <- as.data.frame(mat_sample_fluorescence) %>%
+    dplyr::mutate(
+      dplyr::across(
+        .cols = dplyr::everything(),
+        .fns = as.numeric
+      )
+    )
+
+  colnames(df)[1] <- "uninfiltrated_leaves"
+  df <- df %>%
+    dplyr::mutate(
+      dplyr::across(
+        .cols = -.data$uninfiltrated_leaves,
+        .fns = ~ .x - .data$uninfiltrated_leaves
+      )
+    ) %>%
+    dplyr::select(-c(.data$uninfiltrated_leaves))
+
+  df_melt <- df %>%
+    dplyr::mutate(replicate = as.factor(1:dplyr::n())) %>%
+    tidyr::pivot_longer(
+      cols = -.data$replicate,
+      names_to = "sample"
+    )
+
+  gg_fluor <- ggplot2::ggplot() +
+    ggplot2::geom_col(
+      data = df_tidied,
+      ggplot2::aes(x = .data$sample, y = .data$fluorescence),
+      fill = "#80b1d3",
+      width = 0.5,
+      alpha = 0.5
+    ) +
+    ggbeeswarm::geom_beeswarm(
+      data = df_melt,
+      ggplot2::aes(x = .data$sample, y = .data$value, color = .data$replicate)
+    ) +
+    ggplot2::labs(
+      x = "Construct",
+      y = "Flouresence",
+      color = "Replicate"
+    ) +
+    ggplot2::scale_color_manual(
+      values = c("#fdb462", "#bebada", "#fb8072")
+    )
+    # ggplot2::scale_y_continuous(
+    #   breaks = seq(0, 90500, 10000)
+    # )
+
+  return(gg_fluor)
 }
