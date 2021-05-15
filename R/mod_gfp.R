@@ -16,14 +16,20 @@ mod_gfp_ui <- function(id) {
     sidebarLayout(
       sidebarPanel = sidebarPanel(
         width = 5,
+
         shinyMatrix::matrixInput(
           inputId = ns("mat_std_curve"),
           label = "Values for standard curve",
-          value = matrix(0, nrow = 3, ncol = 2) %>%
-            `colnames<-`(c("GFP Level", "Fluorescence")),
+          value = matrix(
+            0,
+            nrow = 3,
+            ncol = 2,
+            dimnames = list(NULL, c("GFP Level", "Fluorescence"))
+          ),
           inputClass = "numeric",
           rows = list(
-            extend = TRUE
+            extend = TRUE,
+            names = FALSE
           ),
           cols = list(
             names = TRUE
@@ -33,11 +39,16 @@ mod_gfp_ui <- function(id) {
         shinyMatrix::matrixInput(
           inputId = ns("mat_sample_fluorescence"),
           label = "Samples' fluorescence values",
-          value = matrix(0, nrow = 3, ncol = 3) %>%
-            `colnames<-`(paste("Sample", 1:3)),
+          value = matrix(
+            0,
+            nrow = 3,
+            ncol = 3,
+            dimnames = list(NULL, paste("Sample", 1:3))
+          ),
           inputClass = "numeric",
           rows = list(
-            extend = TRUE
+            extend = TRUE,
+            names = FALSE
           ),
           cols = list(
             names = TRUE,
