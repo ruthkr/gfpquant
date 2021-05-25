@@ -14,6 +14,7 @@ mod_gfp_ui <- function(id) {
     title = "Quantify GFP",
 
     sidebarLayout(
+      # sidebarPanel ----
       sidebarPanel = sidebarPanel(
         width = 5,
 
@@ -68,6 +69,7 @@ mod_gfp_ui <- function(id) {
           icon = icon("calculator")
         )
       ),
+      # mainPanel ----
       mainPanel = mainPanel(
         width = 7,
 
@@ -188,7 +190,7 @@ mod_gfp_server <- function(id) {
       # Process data
       df_with_pred_gfp_kg <- df_with_pred_gfp %>%
         dplyr::mutate(
-          gfp_final = gfp * 3
+          gfp_final = (gfp / 200) / 1000
         ) %>%
         `colnames<-`(c("Sample", "Fluorescence", "GFP (ng)", "GFP (g/kg)"))
 
