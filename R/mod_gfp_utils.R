@@ -216,7 +216,8 @@ plot_bar_gfp <- function(df_with_pred_gfp) {
       width = 0.5,
       alpha = 1
     ) +
-    ggplot2::scale_y_continuous(breaks = seq(0, 1250, 250))
+    ggplot2::scale_y_continuous(breaks = seq(0, 0.01, 0.001)) +
+    ggplot2::labs(x = "Construct", y = "GFP (g/kg)")
 
   return(gg_gfp)
 }
