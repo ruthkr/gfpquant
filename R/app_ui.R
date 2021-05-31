@@ -17,7 +17,8 @@ app_ui <- function(request) {
       collapsible = TRUE,
 
       app_body_home(),
-      mod_gfp_ui("gfp_ui_1")
+      mod_gfp_ui("gfp_ui_1"),
+      mod_bca_ui("bca_ui_1")
     )
   )
 }
