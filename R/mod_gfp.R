@@ -11,7 +11,7 @@
 mod_gfp_ui <- function(id) {
   ns <- NS(id)
   tabPanel(
-    title = "Quantify GFP",
+    title = "GFP Assay",
 
     sidebarLayout(
       # sidebarPanel ----

@@ -1,4 +1,4 @@
-Package: gfpquant
+Package: protAssay
 Title: Quantification of GFP Levels
 Version: 0.0.0.9000
 Authors@R: 
@@ -9,8 +9,8 @@ Authors@R:
            comment = c(ORCID = "0000-0003-1873-6203"))
 Description: Quantification of GFP Levels (ng).
 License: MIT + file LICENSE
-URL: https://github.com/ruthkr/gfpquant
-BugReports: https://github.com/ruthkr/gfpquant/issues
+URL: https://github.com/ruthkr/protAssay
+BugReports: https://github.com/ruthkr/protAssay/issues
 Imports: 
     bslib,
     config (>= 0.3.1),

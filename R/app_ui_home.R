@@ -20,7 +20,7 @@ app_body_home <- function() {
         label = "Source code",
         class = "btn-primary",
         icon = icon("github"),
-        onclick = "window.open('https://github.com/ruthkr/gfpquant', '_blank')"
+        onclick = "window.open('https://github.com/ruthkr/protAssay', '_blank')"
       )
     )
   )

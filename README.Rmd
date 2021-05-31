@@ -13,33 +13,33 @@ knitr::opts_chunk$set(
 )
 ```
 
-# gfpquant <!-- <img src="dev/hexagon_logo/logo1.png" align="right" width="120"/> -->
+# protAssay <!-- <img src="dev/hexagon_logo/logo1.png" align="right" width="120"/> -->
 
 <!-- badges: start -->
 `r badgecreatr::badge_lifecycle("experimental")`
 <!-- badges: end -->
 
-The goal of gfpquant is to ...
+The goal of protAssay is to ...
 
 ## Installation
 
-You can install the released version of gfpquant from [CRAN](https://CRAN.R-project.org) with:
+You can install the released version of protAssay from [CRAN](https://CRAN.R-project.org) with:
 
 ``` r
-install.packages("gfpquant")
+install.packages("protAssay")
 ```
 
 And the development version from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("ruthkr/gfpquant")
+devtools::install_github("ruthkr/protAssay")
 ```
 ## Example
 
 This is a basic example which shows you how to solve a common problem:
 
 ```{r example}
-library(gfpquant)
+library(protAssay)
 ## basic example code
 ```

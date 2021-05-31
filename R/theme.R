@@ -25,7 +25,7 @@ app_title <- function(title) {
     div(
       class = "title-container",
       span(title),
-      span(class = "title-version", as.character(utils::packageVersion("gfpquant")))
+      span(class = "title-version", as.character(utils::packageVersion("protAssay")))
     )
   )
 }

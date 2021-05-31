@@ -44,7 +44,7 @@ usethis::use_test( "app" )
 # Documentation
 
 ## Vignette ----
-usethis::use_vignette("gfpquant")
+usethis::use_vignette("protAssay")
 devtools::build_vignettes()
 
 ## Code Coverage----
