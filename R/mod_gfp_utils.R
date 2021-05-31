@@ -146,7 +146,6 @@ plot_std_curve_and_pred <- function(df_std_curve, df_with_pred_gfp, fit) {
 #'
 #' @importFrom rlang .data
 plot_bar_fluorescence <- function(mat_sample_fluorescence) {
-  # browser()
   df_tidied <- get_fluorescence_input(mat_sample_fluorescence)
 
   df <- as.data.frame(mat_sample_fluorescence) %>%
@@ -194,9 +193,8 @@ plot_bar_fluorescence <- function(mat_sample_fluorescence) {
     ggplot2::scale_color_manual(
       values = c("#fdb462", "#bebada", "#fb8072")
     )
-    # ggplot2::scale_y_continuous(
-    #   breaks = seq(0, 90500, 10000)
-    # )
+    # ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, vjust = 0.5, hjust=1),
+    #                axis.title.x= ggplot2::element_blank())
 
   return(gg_fluor)
 }
@@ -206,7 +204,12 @@ plot_bar_fluorescence <- function(mat_sample_fluorescence) {
 #' @param df_with_pred_gfp Data
 #'
 #' @importFrom rlang .data
-plot_bar_gfp <- function(df_with_pred_gfp) {
+plot_bar_gfp <- function(df_with_pred_gfp, wildtype_sample) {
+  # total_gfp <- sum(df_with_pred_gfp[["GFP (g/kg)"]])
+  total_gfp <- df_with_pred_gfp %>%
+    dplyr::filter(.data$Sample == wildtype_sample) %>%
+    dplyr::pull(`GFP (g/kg)`)
+
   gg_gfp <- df_with_pred_gfp %>%
     ggplot2::ggplot() +
     ggplot2::aes(x = .data$Sample, y = .data$`GFP (g/kg)`) +
@@ -216,8 +219,14 @@ plot_bar_gfp <- function(df_with_pred_gfp) {
       width = 0.5,
       alpha = 1
     ) +
-    ggplot2::scale_y_continuous(breaks = seq(0, 0.01, 0.001)) +
-    ggplot2::labs(x = "Construct", y = "GFP (g/kg)")
+    # ggplot2::scale_y_continuous(breaks = seq(0, 0.01, 0.001)) +
+    ggplot2::scale_y_continuous(
+      breaks = seq(0, 0.01, 0.001),
+      sec.axis = ggplot2::sec_axis(~(. / total_gfp) * 100, name = "Percentages")
+    ) +
+    ggplot2::labs(y = "GFP (g/kg)")
+    # ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, vjust = 0.5, hjust=1),
+    #                axis.title.x= ggplot2::element_blank())
 
   return(gg_gfp)
 }

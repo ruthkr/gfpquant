@@ -234,7 +234,7 @@ mod_gfp_server <- function(id) {
       react_vals$df_with_pred_gfp_kg <- df_with_pred_gfp_kg
 
       # Plot
-      gg_plot <- plot_bar_gfp(df_with_pred_gfp_kg)
+      gg_plot <- plot_bar_gfp(df_with_pred_gfp_kg, wildtype_sample)
 
       return(gg_plot)
     }, res = 96)
