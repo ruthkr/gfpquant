@@ -111,6 +111,7 @@ mod_gfp_ui <- function(id) {
 #' gfp Server Functions
 #'
 #' @noRd
+#' @importFrom rlang .data
 mod_gfp_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
@@ -135,7 +136,7 @@ mod_gfp_server <- function(id) {
         df_with_pred_gfp <- predict_gfp_from_fluorescence(df_tidied, list_std_curve$std_curve_fit)
         df_with_pred_gfp_kg <- df_with_pred_gfp %>%
           dplyr::mutate(
-            gfp_final = (gfp / 200) / 1000
+            gfp_final = (.data$gfp / 200) / 1000
           ) %>%
           `colnames<-`(c("Sample", "Fluorescence", "GFP (ng)", "GFP (g/kg)"))
 
