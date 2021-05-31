@@ -245,6 +245,20 @@ mod_gfp_server <- function(id) {
       return(table)
     })
 
+    # Fit summary ----
+    output$std_curve_fit_summary <- renderPrint({
+      if (input$get_gfp_level == 0) {
+        return(print(""))
+      }
+
+      input$get_gfp_level
+      isolate({
+        std_curve_fit <- react_vals$list_std_curve$std_curve_fit
+      })
+
+      return(summary(std_curve_fit))
+    })
+
   })
 }
 
