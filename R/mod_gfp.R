@@ -103,7 +103,6 @@ mod_gfp_ui <- function(id) {
             DT::DTOutput(ns("table_gfp_kg"))
           )
         )
-
       )
     )
   )
@@ -118,16 +117,50 @@ mod_gfp_server <- function(id) {
 
     react_vals <- reactiveValues()
 
+    # Calculations ----
     observeEvent(
-      input$mat_sample_fluorescence, {
-      updateSelectizeInput(
-        session = session,
-        inputId = "wildtype_selection",
-        choices = colnames(input$mat_sample_fluorescence),
-        server = TRUE
-      )
-    })
+      input$get_gfp_level,
+      {
+        # Read inputs
+        mat_std_curve <- input$mat_std_curve
+        mat_sample_fluorescence <- input$mat_sample_fluorescence
 
+        # Process data
+        std_gfp <- mat_std_curve[, 1]
+        std_fluorescence <- mat_std_curve[, 2]
+
+        # Calculations
+        list_std_curve <- get_std_curve_value(std_fluorescence, std_gfp)
+        df_tidied <- get_fluorescence_input(mat_sample_fluorescence)
+        df_with_pred_gfp <- predict_gfp_from_fluorescence(df_tidied, list_std_curve$std_curve_fit)
+        df_with_pred_gfp_kg <- df_with_pred_gfp %>%
+          dplyr::mutate(
+            gfp_final = (gfp / 200) / 1000
+          ) %>%
+          `colnames<-`(c("Sample", "Fluorescence", "GFP (ng)", "GFP (g/kg)"))
+
+        # Reactive values
+        react_vals$list_std_curve <- list_std_curve
+        react_vals$df_tidied <- df_tidied
+        react_vals$df_with_pred_gfp <- df_with_pred_gfp
+        react_vals$df_with_pred_gfp_kg <- df_with_pred_gfp_kg
+      }
+    )
+
+    # Update wildtype_selection ----
+    observeEvent(
+      input$mat_sample_fluorescence,
+      {
+        updateSelectizeInput(
+          session = session,
+          inputId = "wildtype_selection",
+          choices = colnames(input$mat_sample_fluorescence),
+          server = TRUE
+        )
+      }
+    )
+
+    # Debugging panel ----
     output$input_panel_output <- renderPrint({
       if (input$get_gfp_level == 0) {
         return(print("Input your values"))
@@ -139,9 +172,9 @@ mod_gfp_server <- function(id) {
         mat_sample_fluorescence <- input$mat_sample_fluorescence
       })
 
-      vec_a <- mat_std_curve[,1]
+      vec_a <- mat_std_curve[, 1]
       # vec_a <- vec_a[1:(length(vec_a) - 1)]
-      vec_b <- mat_std_curve[,2]
+      vec_b <- mat_std_curve[, 2]
       # vec_b <- vec_b[1:(length(vec_b) - 1)]
 
       # utils::str(list(
@@ -156,89 +189,71 @@ mod_gfp_server <- function(id) {
     })
 
     # Plots ----
-    output$plot_std_curve <- renderPlot({
-      if (input$get_gfp_level == 0) {
-        return(NULL)
-      }
+    output$plot_std_curve <- renderPlot(
+      {
+        if (input$get_gfp_level == 0) {
+          return(NULL)
+        }
 
-      input$get_gfp_level
-      isolate({
-        mat_std_curve <- input$mat_std_curve
-        mat_sample_fluorescence <- input$mat_sample_fluorescence
-      })
+        input$get_gfp_level
+        isolate({
+          list_std_curve <- react_vals$list_std_curve
+          df_tidied <- react_vals$df_tidied
+          df_with_pred_gfp <- react_vals$df_with_pred_gfp
+        })
 
-      # Process data
-      std_gfp <- mat_std_curve[,1]
-      # std_gfp <- std_gfp[1:(length(std_gfp) - 1)]
-      std_fluorescence <- mat_std_curve[,2]
-      # std_fluorescence <- std_fluorescence[1:(length(std_fluorescence) - 1)]
+        # Calculations
+        gg_plot <- plot_std_curve_and_pred(
+          list_std_curve$std_curve_df,
+          df_with_pred_gfp,
+          list_std_curve$std_curve_fit
+        )
 
-      # extra_row <- nrow(mat_sample_fluorescence)
-      # extra_col <- ncol(mat_sample_fluorescence)
-      # mat_sample_fluorescence <- mat_sample_fluorescence[-extra_row, -extra_col]
+        return(gg_plot)
+      },
+      res = 96
+    )
 
-      # Calculations
-      list_std_curve <- get_std_curve_value(std_fluorescence, std_gfp)
-      df_tidied <- get_fluorescence_input(mat_sample_fluorescence)
-      df_with_pred_gfp <- predict_gfp_from_fluorescence(df_tidied, list_std_curve$std_curve_fit)
+    output$plot_bar_fluorescence <- renderPlot(
+      {
+        if (input$get_gfp_level == 0) {
+          return(NULL)
+        }
 
-      gg_plot <- plot_std_curve_and_pred(list_std_curve$std_curve_df, df_with_pred_gfp, list_std_curve$std_curve_fit)
+        input$get_gfp_level
+        isolate({
+          mat_sample_fluorescence <- input$mat_sample_fluorescence
+        })
 
-      # Reactive values
-      react_vals$df_with_pred_gfp <- df_with_pred_gfp
-      react_vals$list_std_curve <- list_std_curve
+        # Plot
+        gg_plot <- plot_bar_fluorescence(mat_sample_fluorescence)
 
-      return(gg_plot)
-    }, res = 96)
+        return(gg_plot)
+      },
+      res = 96
+    )
 
-    output$plot_bar_fluorescence <- renderPlot({
-      if (input$get_gfp_level == 0) {
-        return(NULL)
-      }
+    output$plot_bar_gfp <- renderPlot(
+      {
+        if (input$get_gfp_level == 0) {
+          return(NULL)
+        }
 
-      input$get_gfp_level
-      isolate({
-        mat_sample_fluorescence <- input$mat_sample_fluorescence
-      })
+        input$get_gfp_level
+        isolate({
+          df_with_pred_gfp_kg <- react_vals$df_with_pred_gfp_kg
+          wildtype_sample <- input$wildtype_selection
+        })
 
-      # Process data
-      # extra_row <- nrow(mat_sample_fluorescence)
-      # extra_col <- ncol(mat_sample_fluorescence)
-      # mat_sample_fluorescence <- mat_sample_fluorescence[-extra_row, -extra_col]
+        # Plot
+        gg_plot <- plot_bar_gfp(df_with_pred_gfp_kg, wildtype_sample)
 
-      # Plot
-      gg_plot <- plot_bar_fluorescence(mat_sample_fluorescence)
+        return(gg_plot)
+      },
+      res = 96
+    )
 
-      return(gg_plot)
-    }, res = 96)
-
-    output$plot_bar_gfp <- renderPlot({
-      if (input$get_gfp_level == 0) {
-        return(NULL)
-      }
-
-      input$get_gfp_level
-      isolate({
-        df_with_pred_gfp <- react_vals$df_with_pred_gfp
-        wildtype_sample <- input$wildtype_selection
-      })
-
-      # Process data
-      df_with_pred_gfp_kg <- df_with_pred_gfp %>%
-        dplyr::mutate(
-          gfp_final = (gfp / 200) / 1000
-        ) %>%
-        `colnames<-`(c("Sample", "Fluorescence", "GFP (ng)", "GFP (g/kg)"))
-
-      # Reactive values
-      react_vals$df_with_pred_gfp_kg <- df_with_pred_gfp_kg
-
-      # Plot
-      gg_plot <- plot_bar_gfp(df_with_pred_gfp_kg, wildtype_sample)
-
-      return(gg_plot)
-    }, res = 96)
-
+    # Table ----
     output$table_gfp_kg <- DT::renderDT({
       if (input$get_gfp_level == 0) {
         return(DT::datatable(NULL, style = "bootstrap4"))
@@ -261,9 +276,9 @@ mod_gfp_server <- function(id) {
           lengthChange = FALSE,
           scrollX = TRUE,
           dom = "tB",
-      # <'row'<'col-sm-12'tr>>
-      # <'row'<'col-sm-12 col-md-7'pB><'col-sm-12 col-md-5 text-right'i>>
-      # ",
+          # <'row'<'col-sm-12'tr>>
+          # <'row'<'col-sm-12 col-md-7'pB><'col-sm-12 col-md-5 text-right'i>>
+          # ",
           buttons = list(
             list(
               extend = "csv",
@@ -293,7 +308,6 @@ mod_gfp_server <- function(id) {
 
       return(summary(std_curve_fit))
     })
-
   })
 }
 
