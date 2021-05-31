@@ -5,6 +5,8 @@
 #' @import shiny
 #' @noRd
 app_ui <- function(request) {
+  # Set global ggplot theme
+  ggplot2::theme_set(ggplot2::theme_light())
   tagList(
     # Leave this function for adding external resources
     golem_add_external_resources(),
