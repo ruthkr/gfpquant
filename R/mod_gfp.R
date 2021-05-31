@@ -76,10 +76,27 @@ mod_gfp_ui <- function(id) {
         h4("Results"),
         # verbatimTextOutput(ns("input_panel_output")),
 
-        plotOutput(ns("plot_std_curve")),
-        plotOutput(ns("plot_bar_fluorescence")),
-        plotOutput(ns("plot_bar_gfp")),
-        DT::DTOutput(ns("table_gfp_kg"))
+        tabsetPanel(
+          type = "tabs",
+          tabPanel(
+            title = "Fluorescence plot",
+            plotOutput(ns("plot_bar_fluorescence"))
+          ),
+          tabPanel(
+            title = "Fitting results",
+            plotOutput(ns("plot_std_curve")),
+            verbatimTextOutput(ns("std_curve_fit_summary"))
+          ),
+          tabPanel(
+            title = "GFP level plot",
+            plotOutput(ns("plot_bar_gfp"))
+          ),
+          tabPanel(
+            title = "Result table",
+            DT::DTOutput(ns("table_gfp_kg"))
+          )
+        )
+
       )
     )
   )
