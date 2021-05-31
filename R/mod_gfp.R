@@ -62,6 +62,13 @@ mod_gfp_ui <- function(id) {
           )
         ),
 
+        selectizeInput(
+          ns("wildtype_selection"),
+          choices = NULL,
+          label = "Control sample",
+          options = list(placeholder = "Select control sample")
+        ),
+
         actionButton(
           inputId = ns("get_gfp_level"),
           label = "Calculate",
@@ -110,6 +117,16 @@ mod_gfp_server <- function(id) {
     ns <- session$ns
 
     react_vals <- reactiveValues()
+
+    observeEvent(
+      input$mat_sample_fluorescence, {
+      updateSelectizeInput(
+        session = session,
+        inputId = "wildtype_selection",
+        choices = colnames(input$mat_sample_fluorescence),
+        server = TRUE
+      )
+    })
 
     output$input_panel_output <- renderPrint({
       if (input$get_gfp_level == 0) {
@@ -203,6 +220,7 @@ mod_gfp_server <- function(id) {
       input$get_gfp_level
       isolate({
         df_with_pred_gfp <- react_vals$df_with_pred_gfp
+        wildtype_sample <- input$wildtype_selection
       })
 
       # Process data
