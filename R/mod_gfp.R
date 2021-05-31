@@ -265,33 +265,7 @@ mod_gfp_server <- function(id) {
         df_with_pred_gfp_kg <- react_vals$df_with_pred_gfp_kg
       })
 
-      table <- DT::datatable(
-        data = df_with_pred_gfp_kg,
-        style = "bootstrap4",
-        rownames = FALSE,
-        selection = "none",
-        extensions = "Buttons",
-        options = list(
-          pageLength = 10,
-          filter = FALSE,
-          lengthChange = FALSE,
-          scrollX = TRUE,
-          dom = "tB",
-          # <'row'<'col-sm-12'tr>>
-          # <'row'<'col-sm-12 col-md-7'pB><'col-sm-12 col-md-5 text-right'i>>
-          # ",
-          buttons = list(
-            list(
-              extend = "csv",
-              filename = "data"
-            ),
-            list(
-              extend = "excel",
-              filename = "data"
-            )
-          )
-        )
-      )
+      table <- datatable_gfp(df_with_pred_gfp_kg)
 
       return(table)
     })
