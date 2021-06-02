@@ -35,7 +35,9 @@ mod_gfp_ui <- function(id) {
             names = FALSE
           ),
           cols = list(
-            names = TRUE
+            extend = TRUE,
+            names = TRUE,
+            editableNames = TRUE
           )
         ),
 
@@ -56,9 +58,9 @@ mod_gfp_ui <- function(id) {
             names = FALSE
           ),
           cols = list(
+            extend = TRUE,
             names = TRUE,
-            editableNames = TRUE,
-            extend = TRUE
+            editableNames = TRUE
           )
         ),
 
@@ -128,7 +130,12 @@ mod_gfp_server <- function(id) {
 
         # Process data
         std_gfp <- mat_std_curve[, 1]
-        std_fluorescence <- mat_std_curve[, 2]
+        std_fluorescence <- mat_std_curve[, 2:ncol(mat_std_curve)]
+
+        if (length(std_fluorescence) > length(std_gfp)) {
+          std_fluorescence <- apply(std_fluorescence, 2 , as.numeric)
+          std_fluorescence <- rowMeans(std_fluorescence)
+        }
 
         # Calculations
         list_std_curve <- get_std_curve_value(std_fluorescence, std_gfp)
