@@ -3,6 +3,7 @@ options(golem.app.prod = FALSE) # TRUE = production mode, FALSE = development mo
 
 # Detach all loaded packages and clean your environment
 golem::detach_all_attached()
+library(devtools)
 # rm(list=ls(all.names = TRUE))
 
 # Document and reload your package
