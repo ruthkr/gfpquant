@@ -1,0 +1,8 @@
+R
+inst
+man
+app.R
+LICENSE
+NEWS.md
+DESCRIPTION
+NAMESPACE
