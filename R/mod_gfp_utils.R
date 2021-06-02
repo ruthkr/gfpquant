@@ -108,7 +108,7 @@ plot_std_curve_and_pred <- function(df_std_curve, df_with_pred_gfp, fit) {
       data = df_with_pred_gfp,
       ggplot2::aes(
         x = .data$gfp, xend = .data$gfp,
-        y = 0, yend = .data$fluorescence
+        y = -1e3, yend = .data$fluorescence
       ),
       linetype = "dashed"
     ) +
@@ -116,7 +116,7 @@ plot_std_curve_and_pred <- function(df_std_curve, df_with_pred_gfp, fit) {
     ggplot2::geom_segment(
       data = df_with_pred_gfp,
       ggplot2::aes(
-        x = 0, xend = .data$gfp,
+        x = -1e3, xend = .data$gfp,
         y = .data$fluorescence, yend = .data$fluorescence
       ),
       linetype = "dashed"
@@ -134,8 +134,9 @@ plot_std_curve_and_pred <- function(df_std_curve, df_with_pred_gfp, fit) {
       x = "GFP (ng)",
       y = "Flouresence"
     ) +
-    ggplot2::scale_x_continuous(expand = ggplot2::expansion(mult = c(0, 0.01), add = c(2, 0))) +
-    ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0, 0.01), add = c(2, 0)))
+    ggplot2::coord_cartesian(xlim = c(0, NA), ylim = c(0, NA))
+    # ggplot2::scale_x_continuous(expand = ggplot2::expansion(mult = c(0, 0.01), add = c(2, 0))) +
+    # ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0, 0.01), add = c(2, 0)))
 
   return(gg)
 }
