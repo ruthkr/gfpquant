@@ -38,7 +38,7 @@ get_fluorescence_input <- function(mdata) {
     dplyr::summarise(
       dplyr::across(
         .cols = dplyr::everything(),
-        .fns = mean
+        .fns = ~ mean(.x, na.rm = TRUE)
       )
     ) %>%
     dplyr::mutate(
