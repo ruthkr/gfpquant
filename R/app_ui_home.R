@@ -9,7 +9,7 @@ app_body_home <- function() {
     id = "tab-home",
     value = "home",
     col_12(
-      # class = "home-page",
+      class = "home-page",
       h2("About this tool"),
       includeMarkdown(
         app_sys("app/www", "app_body.md")
