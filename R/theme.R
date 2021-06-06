@@ -21,7 +21,7 @@ theme <- function() {
 #' @noRd
 app_title <- function(title) {
   div(
-    img(class = "navbar-custom-logo", src = "www/favicon.png"),
+    img(class = "navbar-custom-logo", src = "www/icon.svg"),
     div(
       class = "title-container",
       span(title),

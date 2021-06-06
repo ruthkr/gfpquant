@@ -12,7 +12,7 @@ app_ui <- function(request) {
     golem_add_external_resources(),
     # Your application UI logic
     navbarPage(
-      title = "protAssay",
+      title = app_title("protAssay"),
       theme = theme(),
       collapsible = TRUE,
 
@@ -37,7 +37,7 @@ golem_add_external_resources <- function() {
   )
 
   tags$head(
-    favicon(),
+    favicon(ico = "favicon", ext = "png"),
     bundle_resources(
       path = app_sys("app/www"),
       app_title = "protAssay"
