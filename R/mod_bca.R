@@ -21,13 +21,7 @@ mod_bca_ui <- function(id) {
         shinyMatrix::matrixInput(
           inputId = ns("mat_std_curve"),
           label = "Values for standard curve",
-          value = matrix(
-            # c(100, 200, 400, 600, 800, 0, 0, 0, 0, 0),
-            c(100, 200, 400, 600, 800, 26442, 40792, 92383, 135403, 177405),
-            nrow = 5,
-            ncol = 2,
-            dimnames = list(NULL, c("BSA Level", "Signal"))
-          ),
+          value = init_mat_std_curve(golem::app_prod(), assay = "bca"),
           inputClass = "numeric",
           rows = list(
             extend = TRUE,
@@ -43,16 +37,7 @@ mod_bca_ui <- function(id) {
         shinyMatrix::matrixInput(
           inputId = ns("mat_sample_signal"),
           label = "Signal absorbance values",
-          value = matrix(
-            # rep("0", 3),
-            # nrow = 1,
-            # ncol = 3,
-            # dimnames = list(NULL, c("Subtrahend sample", paste("Sample", 1:2)))
-            c(3239, 3351, 3305, 94613, 93828, 93380, 26388, 26840, 27044, 33545, 34215, 34566),
-            nrow = 3,
-            ncol = 4,
-            dimnames = list(NULL, c("Subtrahend sample", paste("Sample", 1:3)))
-          ),
+          value = init_mat_sample(golem::app_prod()),
           inputClass = "numeric",
           rows = list(
             extend = TRUE,

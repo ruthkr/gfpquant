@@ -1,3 +1,64 @@
+#' @noRd
+init_mat_std_curve <- function(is_prod = FALSE, assay = c("gfp", "bca")) {
+  assay <- match.arg(assay)
+
+  if (assay == "gfp") {
+    levels <- c(100L, 200L, 400L, 600L, 800L)
+    col_names <- c("GFP Level", "Fluorescence")
+  } else if (assay == "bca") {
+    levels <- c(25L, 125L, 250L, 500L, 750L)
+    col_names <- c("BSA Level", "Signal")
+  }
+
+  if (is_prod) {
+    # Production matrix
+    if (assay == "gfp") {
+      signal <- c(0L, 0L, 0L, 0L, 0L)
+    } else if (assay == "bca") {
+      signal <- c(0L, 0L, 0L, 0L, 0L)
+    }
+  } else {
+    # Testing matrix
+    if (assay == "gfp") {
+      signal <- c(26442L, 40792L, 92383L, 135403L, 177405L)
+    } else if (assay == "bca") {
+      signal <- c(26442L, 40792L, 92383L, 135403L, 177405L)
+    }
+  }
+
+  mat <- matrix(
+    c(levels, signal),
+    nrow = 5,
+    ncol = 2,
+    dimnames = list(NULL, col_names)
+  )
+
+  return(mat)
+}
+
+#' @noRd
+init_mat_sample <- function(is_prod = FALSE) {
+  if (is_prod) {
+    # Production matrix
+    mat <- matrix(
+      rep("0", 3),
+      nrow = 1,
+      ncol = 3,
+      dimnames = list(NULL, c("Subtrahend sample", paste("Sample", 1:2)))
+    )
+  } else {
+    # Testing matrix
+
+    mat <- matrix(
+      c(3239, 3351, 3305, 94613, 93828, 93380, 26388, 26840, 27044, 33545, 34215, 34566),
+      nrow = 3,
+      ncol = 4,
+      dimnames = list(NULL, c("Subtrahend sample", paste("Sample", 1:3)))
+    )
+  }
+  return(mat)
+}
+
 #' Function to calculate standard curve
 #'
 #' @param std_fluorescence Fluorescence for the standard curve.
