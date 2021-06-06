@@ -23,7 +23,7 @@ mod_gfp_ui <- function(id) {
           label = "Values for standard curve",
           value = matrix(
             # 0,
-            c(100, 200, 400, 600, 800, 26442, 40792, 92383, 135403, 177405),
+            c(100, 200, 400, 600, 800, 0, 0, 0, 0, 0),
             # byrow = TRUE,
             nrow = 5,
             ncol = 2,
@@ -45,12 +45,12 @@ mod_gfp_ui <- function(id) {
           inputId = ns("mat_sample_fluorescence"),
           label = "Samples' fluorescence values",
           value = matrix(
-            # 0,
-            c(3239, 3351, 3305, 94613, 93828, 93380, 26388, 26840, 27044, 33545, 34215, 34566),
-            # byrow = TRUE,
-            nrow = 3,
-            ncol = 4,
-            dimnames = list(NULL, c("Uninfiltrated Leaves", paste("Sample", 1:3)))
+            rep("0", 3),
+            # c(3239, 3351, 3305, 94613, 93828, 93380, 26388, 26840, 27044, 33545, 34215, 34566),
+            byrow = TRUE,
+            nrow = 1,
+            ncol = 3,
+            dimnames = list(NULL, c("Subtrahend sample", paste("Sample", 1:2)))
           ),
           inputClass = "numeric",
           rows = list(
