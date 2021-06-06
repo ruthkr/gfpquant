@@ -5,6 +5,7 @@ theme <- function() {
     version = 4,
     bootswatch = "united",
     primary = "#606BD6",
+    secondary = "#606BD6",
     # secondary = "#d0d4d8",
     # success = "#a4c689",
     # warning = "#fdbe4b",
