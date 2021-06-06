@@ -3,9 +3,11 @@
 #' @param df_with_pred_gfp Data frame with predicted GFP.
 #' @param wildtype_sample Name of wildtype/control sample.
 #' @param var_to_plot Variable name to plot.
+#' @param ylab Y-axis name.
+#' @param percent_lab Secondary Y-axis name.
 #'
 #' @importFrom rlang .data
-plot_bar_gfp <- function(df_with_pred_gfp, wildtype_sample, var_to_plot = "GFP (g/kg)") {
+plot_bar_prot <- function(df_with_pred_gfp, wildtype_sample, var_to_plot = "GFP (g/kg)", ylab = "GFP (g/kg)", percent_lab = "Percentage of GFP") {
   df_with_pred_gfp <- df_with_pred_gfp %>%
     dplyr::rename(wanted_var = var_to_plot)
 
@@ -23,14 +25,14 @@ plot_bar_gfp <- function(df_with_pred_gfp, wildtype_sample, var_to_plot = "GFP (
       alpha = 1
     ) +
     ggplot2::scale_y_continuous(
-      breaks = seq(0, 0.01, 0.001),
+      # breaks = seq(0, 0.01, 0.001),
       sec.axis = ggplot2::sec_axis(
         ~ (. / total_gfp),
-        name = "Percentage of GFP",
+        name = percent_lab,
         labels = scales::percent
       )
     ) +
-    ggplot2::labs(y = "GFP (g/kg)")
+    ggplot2::labs(y = ylab)
   # ggplot2::theme(
   #   axis.text.x = ggplot2::element_text(angle = 45, vjust = 0.5, hjust=1),
   #   axis.title.x= ggplot2::element_blank()
@@ -40,7 +42,7 @@ plot_bar_gfp <- function(df_with_pred_gfp, wildtype_sample, var_to_plot = "GFP (
 }
 
 #' @noRd
-datatable_gfp <- function(data) {
+datatable_bca <- function(data) {
   table <- DT::datatable(
     data = data,
     style = "bootstrap4",
@@ -69,12 +71,8 @@ datatable_gfp <- function(data) {
     )
   ) %>%
     DT::formatRound(
-      columns = c("Fluorescence", "GFP (ng)"),
+      columns = c("Signal absorbance", "Protein conc. (ng)"),
       digits = 2
-    ) %>%
-    DT::formatSignif(
-      columns = c("GFP (g/kg)"),
-      digits = 3
     )
 
   return(table)
