@@ -4,12 +4,14 @@
 \alias{plot_bar_gfp}
 \title{Plot GFP}
 \usage{
-plot_bar_gfp(df_with_pred_gfp, wildtype_sample)
+plot_bar_gfp(df_with_pred_gfp, wildtype_sample, var_to_plot = "GFP (g/kg)")
 }
 \arguments{
 \item{df_with_pred_gfp}{Data frame with predicted GFP.}
 
 \item{wildtype_sample}{Name of wildtype/control sample.}
+
+\item{var_to_plot}{Variable name to plot.}
 }
 \description{
 Plot GFP
