@@ -27,3 +27,30 @@
   padding-top: 1px;
   padding-bottom: 1px;
 }
+
+.vue-input table {
+  border-collapse: collapse;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  background-color: white;
+  font-size: 0.9em;
+  box-shadow: 0 0 0 1px #ced4da;
+  border-spacing: initial;
+  border-style: hidden;
+  text-align: center;
+}
+
+.vue-input td, .vue-input th {
+  border: 1px #ced4da solid !important;
+}
+
+.vue-input th {
+  background-color: #9ea4d6;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.vue-input tr:nth-of-type(even) {
+  background-color: #f4f5fa;
+}
+
