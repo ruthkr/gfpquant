@@ -44,7 +44,7 @@ init_mat_sample <- function(is_prod = FALSE) {
       rep("0", 3),
       nrow = 1,
       ncol = 3,
-      dimnames = list(NULL, c("Subtrahend sample", paste("Sample", 1:2)))
+      dimnames = list(NULL, c("background_sample sample", paste("Sample", 1:2)))
     )
   } else {
     # Testing matrix
@@ -53,7 +53,7 @@ init_mat_sample <- function(is_prod = FALSE) {
       c(3239, 3351, 3305, 94613, 93828, 93380, 26388, 26840, 27044, 33545, 34215, 34566),
       nrow = 3,
       ncol = 4,
-      dimnames = list(NULL, c("Subtrahend sample", paste("Sample", 1:3)))
+      dimnames = list(NULL, c("background_sample sample", paste("Sample", 1:3)))
     )
   }
   return(mat)
@@ -92,7 +92,7 @@ get_fluorescence_input <- function(mdata) {
       )
     )
 
-  colnames(df_input)[1] <- "subtrahend_column"
+  colnames(df_input)[1] <- "background_sample_column"
 
   # Get new df with the fluorescence value subtracted from infiltrated leave
   df_tidied <- df_input %>%
@@ -104,11 +104,11 @@ get_fluorescence_input <- function(mdata) {
     ) %>%
     dplyr::mutate(
       dplyr::across(
-        .cols = -.data$subtrahend_column,
-        .fns = ~ .x - .data$subtrahend_column
+        .cols = -.data$background_sample_column,
+        .fns = ~ .x - .data$background_sample_column
       )
     ) %>%
-    dplyr::select(-c("subtrahend_column")) %>%
+    dplyr::select(-c("background_sample_column")) %>%
     tidyr::pivot_longer(
       dplyr::everything(),
       names_to = "sample",

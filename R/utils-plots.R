@@ -82,15 +82,15 @@ plot_bar_fluorescence <- function(mat_sample_fluorescence, ylab = "Flouresence")
       )
     )
 
-  colnames(df)[1] <- "subtrahend_column"
+  colnames(df)[1] <- "background_sample_column"
   df <- df %>%
     dplyr::mutate(
       dplyr::across(
-        .cols = -.data$subtrahend_column,
-        .fns = ~ .x - .data$subtrahend_column
+        .cols = -.data$background_sample_column,
+        .fns = ~ .x - .data$background_sample_column
       )
     ) %>%
-    dplyr::select(-c(.data$subtrahend_column))
+    dplyr::select(-c(.data$background_sample_column))
 
   df_melt <- df %>%
     dplyr::mutate(replicate = as.factor(1:dplyr::n())) %>%
